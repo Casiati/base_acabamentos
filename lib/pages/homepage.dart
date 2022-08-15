@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../apilogin.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -10,20 +13,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  TextEditingController longinController = TextEditingController();
-  TextEditingController senhaController = TextEditingController();
-
+  TextEditingController userController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  void login() {
-    print(longinController.text + senhaController.text);
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.amber,
         title: Text(
           'Base Equipamentos',
           style: TextStyle(
@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> {
                   decoration: InputDecoration(
                     labelText: 'Email',
                     labelStyle: TextStyle(),
+                    prefixIcon: Icon(Icons.mail),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(),
                     ),
@@ -58,10 +59,9 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(
                     fontSize: 18,
                   ),
-                  textAlign: TextAlign.center,
-                  controller: longinController,
+                  controller: userController,
                   validator: (value) {
-                    if(value!.isEmpty){
+                    if (value!.isEmpty) {
                       return "Insira seu Email";
                     }
                   },
@@ -70,9 +70,11 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: TextFormField(
+                  obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Senha',
                     labelStyle: TextStyle(),
+                    prefixIcon: Icon(Icons.lock),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(),
                     ),
@@ -83,10 +85,9 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(
                     fontSize: 18,
                   ),
-                  textAlign: TextAlign.center,
-                  controller: senhaController,
+                  controller: passwordController,
                   validator: (value) {
-                    if(value!.isEmpty){
+                    if (value!.isEmpty) {
                       return "Insira sua senha";
                     }
                   },
@@ -96,13 +97,12 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: TextButton(
                   onPressed: () {
-                    if (formKey.currentState!.validate()){
-                      login();
+                    if (formKey.currentState!.validate()) {
+                      LoginApi.login(
+                          userController.text, passwordController.text);
                     }
                   },
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                  ),
+                  style: TextButton.styleFrom(backgroundColor: Colors.amber),
                   child: const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
