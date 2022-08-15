@@ -1,10 +1,13 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:tela_login_goga/pages/homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tela_login_goga/domain/usuario.dart';
+import 'package:async/async.dart';
 
 class LoginApi {
-  static Future<String?> login(String user, String password) async {
+  static const jUsuario = 'json_usuario';
+
+  static Future<Usuario?> login(String user, String password) async {
     final response =
         await http.post(Uri.parse('https://tanilo.herokuapp.com/oauth/token'),
             headers: {
@@ -13,10 +16,15 @@ class LoginApi {
             },
             encoding: Encoding.getByName('utf-8'),
             body: "grant_type=password&password=$password&username=$user");
-    print(response.body);
 
     if (response.statusCode == 200) {
-      print('Logado com Sucesso');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('jUsuario', response.body);
+      String? jUsuario = prefs.getString('jUsuario');
+      print(jUsuario);
+      Map<String, dynamic> mapResponse = json.decode(response.body);
+      final usuario = Usuario.fromJson(mapResponse);
+      return usuario;
     } else {
       print("Falhou");
     }

@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
+import 'package:async/async.dart';
 import '../apilogin.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,6 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -96,10 +95,11 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (formKey.currentState!.validate()) {
-                      LoginApi.login(
+                      var usuario = await LoginApi.login(
                           userController.text, passwordController.text);
+
                     }
                   },
                   style: TextButton.styleFrom(backgroundColor: Colors.amber),
