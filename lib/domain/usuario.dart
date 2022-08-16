@@ -8,12 +8,12 @@ class Usuario {
     this.userId,
   });
 
-  late final String? accessToken;
-  late final String? tokenType;
-  late final int? expiresIn;
-  late final String? scope;
-  late final String? userFirstName;
-  late final int? userId;
+  String? accessToken;
+  String? tokenType;
+  int? expiresIn;
+   String? scope;
+   String? userFirstName;
+   int? userId;
 
   Usuario.fromJson(Map<String, dynamic> json) {
     accessToken = json['access_token'];

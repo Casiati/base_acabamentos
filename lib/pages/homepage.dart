@@ -1,29 +1,28 @@
-// ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
-import 'package:async/async.dart';
+import 'package:get/get.dart';
+import 'package:tela_login_goga/pages/menupage.dart';
 import '../apilogin.dart';
 
+
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-
+  int estadoLogin = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        title: Text(
+        title: const Text(
           'Base Equipamentos',
           style: TextStyle(
             color: Colors.white,
@@ -44,7 +43,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Email',
                     labelStyle: TextStyle(),
                     prefixIcon: Icon(Icons.mail),
@@ -55,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                       borderSide: BorderSide(),
                     ),
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                   ),
                   controller: userController,
@@ -70,7 +69,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: TextFormField(
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Senha',
                     labelStyle: TextStyle(),
                     prefixIcon: Icon(Icons.lock),
@@ -81,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                       borderSide: BorderSide(),
                     ),
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                   ),
                   controller: passwordController,
@@ -96,11 +95,21 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: TextButton(
                   onPressed: () async {
-                    if (formKey.currentState!.validate()) {
-                      var usuario = await LoginApi.login(
-                          userController.text, passwordController.text);
-
+                    showLoaderDialog(context);
+                    var usuario = await LoginApi.login(
+                        userController.text, passwordController.text);
+                    Navigator.pop(context);
+                    if (usuario?.accessToken == null) {
+                      Get.snackbar(
+                        'Falha',
+                        'Email ou Senha incorreto.',
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                        snackPosition: SnackPosition.TOP,
+                      );
                     }
+                    if (usuario?.accessToken != null)
+                      return Get.off(const MenuPage());
                   },
                   style: TextButton.styleFrom(backgroundColor: Colors.amber),
                   child: const Padding(
@@ -119,6 +128,27 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: Row(
+        children: [
+          const CircularProgressIndicator(),
+          Container(
+            margin: const EdgeInsets.only(left: 7),
+            child: const Text("Aguarde..."),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
