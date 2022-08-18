@@ -1,37 +1,34 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:tela_login_goga/pages/alugueis.dart';
-import 'package:tela_login_goga/pages/clientes.dart';
-import 'package:tela_login_goga/pages/enderecos.dart';
-import 'package:tela_login_goga/pages/homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tela_login_goga/api/api_aluguel.dart';
+import 'package:tela_login_goga/domain/usuario.dart';
+import 'menupage.dart';
 
-import 'equipamentos.dart';
+class AlugueisPage extends StatelessWidget {
+  AlugueisPage({Key? key}) : super(key: key);
 
-class MenuPage extends StatelessWidget {
-  MenuPage({Key? key}) : super(key: key);
+  var usuario = Usuario();
 
-  static logout() {
-    Get.offAll(HomePage());
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.red,
         title: Text(
-          'Base Equipamentos',
+          'Alugueis',
           style: TextStyle(
             color: Colors.white,
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: logout,
-          ),
+              icon: Icon(Icons.logout),
+              onPressed: () async {
+                await MenuPage.logout();
+              }),
         ],
       ),
       body: Center(
@@ -42,15 +39,17 @@ class MenuPage extends StatelessWidget {
               height: 30,
             ),
             Container(
-              width: 300,
+              width: 250,
               child: TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.red,
                 ),
-                onPressed: () {
-                  Get.to(() => AlugueisPage());
+                onPressed: () async {
+                  {
+                    await AluguelApi.aluguel(usuario.accessToken);
+                  }
                 },
-                child: Text('Alugueis',
+                child: Text('Listar',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
@@ -61,13 +60,13 @@ class MenuPage extends StatelessWidget {
               height: 10,
             ),
             Container(
-              width: 300,
+              width: 250,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.teal,
+                  backgroundColor: Colors.red,
                 ),
-                onPressed: () {Get.to(() => ClientesPage());},
-                child: Text('Clientes',
+                onPressed: () {},
+                child: Text('Cadastrar',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
@@ -78,11 +77,11 @@ class MenuPage extends StatelessWidget {
               height: 10,
             ),
             Container(
-              width: 300,
+              width: 250,
               child: TextButton(
-                style: TextButton.styleFrom(backgroundColor: Colors.pink),
-                onPressed: () {Get.to(() => EquipamentosPage());},
-                child: Text('Equipamentos',
+                style: TextButton.styleFrom(backgroundColor: Colors.red),
+                onPressed: () {},
+                child: Text('Atualizar',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
@@ -93,14 +92,14 @@ class MenuPage extends StatelessWidget {
               height: 10,
             ),
             Container(
-              width: 300,
+              width: 250,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.orange,
+                  backgroundColor: Colors.red,
                 ),
-                onPressed: () {Get.to(() => EnderecosPage());},
+                onPressed: () {},
                 child: Text(
-                  'Endereços',
+                  'Excluir',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 30,

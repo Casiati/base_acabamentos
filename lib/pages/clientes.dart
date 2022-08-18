@@ -1,37 +1,28 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:tela_login_goga/pages/alugueis.dart';
-import 'package:tela_login_goga/pages/clientes.dart';
-import 'package:tela_login_goga/pages/enderecos.dart';
-import 'package:tela_login_goga/pages/homepage.dart';
+import 'menupage.dart';
 
-import 'equipamentos.dart';
+class ClientesPage extends StatelessWidget {
+  ClientesPage({Key? key}) : super(key: key);
 
-class MenuPage extends StatelessWidget {
-  MenuPage({Key? key}) : super(key: key);
 
-  static logout() {
-    Get.offAll(HomePage());
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.teal,
         title: Text(
-          'Base Equipamentos',
+          'Clientes',
           style: TextStyle(
             color: Colors.white,
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: logout,
-          ),
+          IconButton(icon: Icon(Icons.logout), onPressed: () async {
+            await MenuPage.logout();
+          }),
         ],
       ),
       body: Center(
@@ -42,32 +33,13 @@ class MenuPage extends StatelessWidget {
               height: 30,
             ),
             Container(
-              width: 300,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                onPressed: () {
-                  Get.to(() => AlugueisPage());
-                },
-                child: Text('Alugueis',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                    )),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: 300,
+              width: 250,
               child: TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.teal,
                 ),
-                onPressed: () {Get.to(() => ClientesPage());},
-                child: Text('Clientes',
+                onPressed: () {},
+                child: Text('Listar',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
@@ -78,29 +50,46 @@ class MenuPage extends StatelessWidget {
               height: 10,
             ),
             Container(
-              width: 300,
-              child: TextButton(
-                style: TextButton.styleFrom(backgroundColor: Colors.pink),
-                onPressed: () {Get.to(() => EquipamentosPage());},
-                child: Text('Equipamentos',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                    )),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: 300,
+              width: 250,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.orange,
+                  backgroundColor: Colors.teal,
                 ),
-                onPressed: () {Get.to(() => EnderecosPage());},
+                onPressed: () {},
+                child: Text('Cadastrar',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                    )),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: 250,
+              child: TextButton(
+                style: TextButton.styleFrom(backgroundColor: Colors.teal),
+                onPressed: () {},
+                child: Text('Atualizar',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                    )),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: 250,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                ),
+                onPressed: () {},
                 child: Text(
-                  'Endereços',
+                  'Excluir',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 30,

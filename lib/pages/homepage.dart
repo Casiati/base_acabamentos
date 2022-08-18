@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:tela_login_goga/pages/menupage.dart';
 import '../apilogin.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -43,6 +42,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     labelStyle: TextStyle(),
@@ -58,11 +58,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 18,
                   ),
                   controller: userController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Insira seu Email";
-                    }
-                  },
+
                 ),
               ),
               Padding(
@@ -84,11 +80,8 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 18,
                   ),
                   controller: passwordController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Insira sua senha";
-                    }
-                  },
+
+
                 ),
               ),
               Padding(
@@ -109,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                     if (usuario?.accessToken != null)
-                      return Get.off(const MenuPage());
+                      return Get.off(() => MenuPage());
                   },
                   style: TextButton.styleFrom(backgroundColor: Colors.amber),
                   child: const Padding(
@@ -137,8 +130,14 @@ class _HomePageState extends State<HomePage> {
         children: [
           const CircularProgressIndicator(),
           Container(
-            margin: const EdgeInsets.only(left: 7),
-            child: const Text("Aguarde..."),
+            margin: const EdgeInsets.only(left: 30),
+            child: const Text(
+              "Aguarde...",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ],
       ),
