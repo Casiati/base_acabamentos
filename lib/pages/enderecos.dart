@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tela_login_goga/domain/endereco.dart';
 
+import '../api/api_cep.dart';
 import '../api/api_endereco.dart';
+import '../domain/cep.dart';
 import 'menupage.dart';
 
 class EnderecosPage extends StatefulWidget {
@@ -216,12 +219,12 @@ class _EnderecosPage extends State<EnderecosPage> {
     );
   }
 
-  TextEditingController cep = TextEditingController();
-  TextEditingController numero = TextEditingController();
-  TextEditingController rua = TextEditingController();
-  TextEditingController bairro = TextEditingController();
-  TextEditingController localidade = TextEditingController();
-  TextEditingController estado = TextEditingController();
+  TextEditingController cepController = TextEditingController();
+  TextEditingController numeroController = TextEditingController();
+  TextEditingController ruaController = TextEditingController();
+  TextEditingController bairroController = TextEditingController();
+  TextEditingController localidadeController = TextEditingController();
+  TextEditingController estadoController = TextEditingController();
 
   cadastraEnd() {
     return SingleChildScrollView(
@@ -234,7 +237,8 @@ class _EnderecosPage extends State<EnderecosPage> {
                 Container(
                   width: 260,
                   child: TextField(
-                    controller: cep,
+                    keyboardType: TextInputType.number,
+                    controller: cepController,
                     decoration: InputDecoration(
                       labelText: 'CEP',
                       labelStyle: TextStyle(),
@@ -250,7 +254,13 @@ class _EnderecosPage extends State<EnderecosPage> {
                     shape: CircleBorder(),
                   ),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var cep = await CepApi.getCep(cepController.text);
+                      ruaController.text = cep!.logradouro!;
+                      bairroController.text = cep.bairro!;
+                      localidadeController.text = cep.localidade!;
+                      estadoController.text = cep.uf!;
+                    },
                     icon: Icon(
                       Icons.search,
                     ),
@@ -265,7 +275,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                 Container(
                   width: 220,
                   child: TextField(
-                    controller: rua,
+                    controller: ruaController,
                     decoration: InputDecoration(
                       labelText: 'Rua',
                       labelStyle: TextStyle(),
@@ -281,7 +291,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                 Container(
                   width: 100,
                   child: TextField(
-                    controller: numero,
+                    controller: numeroController,
                     decoration: InputDecoration(
                       labelText: 'Numero',
                       labelStyle: TextStyle(),
@@ -296,7 +306,7 @@ class _EnderecosPage extends State<EnderecosPage> {
             Container(
               width: 340,
               child: TextField(
-                controller: bairro,
+                controller: bairroController,
                 decoration: InputDecoration(
                   labelText: 'Bairro',
                   labelStyle: TextStyle(),
@@ -307,13 +317,13 @@ class _EnderecosPage extends State<EnderecosPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom:30),
+              padding: const EdgeInsets.only(bottom: 5),
               child: Row(
                 children: [
                   Container(
                     width: 220,
                     child: TextField(
-                      controller: localidade,
+                      controller: localidadeController,
                       decoration: InputDecoration(
                         labelText: 'Cidade',
                         labelStyle: TextStyle(),
@@ -326,7 +336,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                   Container(
                     width: 100,
                     child: TextField(
-                      controller: estado,
+                      controller: estadoController,
                       decoration: InputDecoration(
                         labelText: 'Estado',
                         labelStyle: TextStyle(),
@@ -339,6 +349,56 @@ class _EnderecosPage extends State<EnderecosPage> {
                 ],
               ),
             ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 30,
+                  ),
+                  SizedBox(
+                      width: 120,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.orange),
+
+                        onPressed: () {
+                          cepController.text = "";
+                          numeroController.text = "";
+                          ruaController.text = "";
+                          bairroController.text = "";
+                          localidadeController.text = "";
+                          estadoController.text = "";
+                        },
+                        child: Text(
+                          'Limpar',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  SizedBox(
+                    width: 120,
+                    child: TextButton(
+                      style:
+                          TextButton.styleFrom(backgroundColor: Colors.orange),
+                      onPressed: () {},
+                      child: Text(
+                        'Cadastrar',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
