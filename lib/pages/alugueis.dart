@@ -1,26 +1,23 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tela_login_goga/api/api_aluguel.dart';
-import 'package:tela_login_goga/domain/usuario.dart';
+import 'package:tela_login_goga/domain/cores.dart';
+import '../widget/logo.dart';
 import 'menupage.dart';
 
 class AlugueisPage extends StatelessWidget {
   AlugueisPage({Key? key}) : super(key: key);
 
-  var usuario = Usuario();
-
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: backColor,
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        iconTheme: IconThemeData(color: useColor),
+        backgroundColor: appbarColor,
         title: Text(
           'Alugueis',
           style: TextStyle(
-            color: Colors.white,
+            color: useColor,
           ),
         ),
         actions: [
@@ -34,24 +31,27 @@ class AlugueisPage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [
+          children: [SizedBox(
+            height: 12,
+          ),
+            const Logo(
+                height: 125,
+                width: 125,
+                image:
+                "https://media.discordapp.net/attachments/569592762765410334/1009997591976611960/image-removebg-preview_5.png"),
             SizedBox(
-              height: 30,
+              height: 15,
             ),
             Container(
               width: 250,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: useColor,
                 ),
-                onPressed: () async {
-                  {
-                    await AluguelApi.aluguel(usuario.accessToken);
-                  }
-                },
+                onPressed: () async {},
                 child: Text('Listar',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: backColor,
                       fontSize: 30,
                     )),
               ),
@@ -63,12 +63,12 @@ class AlugueisPage extends StatelessWidget {
               width: 250,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: useColor,
                 ),
                 onPressed: () {},
                 child: Text('Cadastrar',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: backColor,
                       fontSize: 30,
                     )),
               ),
@@ -79,11 +79,11 @@ class AlugueisPage extends StatelessWidget {
             Container(
               width: 250,
               child: TextButton(
-                style: TextButton.styleFrom(backgroundColor: Colors.red),
+                style: TextButton.styleFrom(backgroundColor: useColor),
                 onPressed: () {},
                 child: Text('Atualizar',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: backColor,
                       fontSize: 30,
                     )),
               ),
@@ -95,13 +95,13 @@ class AlugueisPage extends StatelessWidget {
               width: 250,
               child: TextButton(
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: useColor,
                 ),
                 onPressed: () {},
                 child: Text(
                   'Excluir',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: backColor,
                     fontSize: 30,
                   ),
                 ),

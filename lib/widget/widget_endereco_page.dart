@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tela_login_goga/domain/cores.dart';
 import '../api/api_cep.dart';
 import '../api/api_endereco.dart';
 import '../domain/endereco.dart';
@@ -16,8 +17,8 @@ listaEndereco() {
           case ConnectionState.none:
             return Container(
               alignment: Alignment.center,
-              child: const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(useColor),
                 strokeWidth: 5.0,
               ),
             );
@@ -32,13 +33,13 @@ listaEndereco() {
                   'Falha na Requisão',
                   style: TextStyle(
                     fontSize: 25,
-                    color: Colors.white,
+                    color: backColor,
                   ),
                 ),
               );
             } else {
               List<Endereco>? endereco = snapshot.data as List<Endereco>?;
-              return listView(endereco, Colors.orange);
+              return listView(endereco, useColor);
             }
         }
       });
@@ -53,7 +54,7 @@ listView(endereco, cor) {
       itemCount: endereco.length,
       itemBuilder: (context, index) {
         Endereco p = endereco[index];
-        return Card(
+        return Card(color: appbarColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -64,24 +65,24 @@ listView(endereco, cor) {
                 color: cor,
                 child: Text(
                   '  ID: ${p.id.toString()}',
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, color: backColor),
                 ),
               ),
               Text(
                 'CEP: ${p.cep.toString()}',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20 ,color: useColor),
               ),
               Text(
                 p.localidade.toString(),
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20,color: useColor),
               ),
               Text(
                 p.logradouro.toString(),
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20,color: useColor),
               ),
               Text(
                 'Nº: ${p.numero.toString()}',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20,color: useColor),
               ),
             ],
           ),

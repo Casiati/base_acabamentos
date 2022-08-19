@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:tela_login_goga/domain/cores.dart';
 import '../api/api_cep.dart';
 import '../api/api_endereco.dart';
+import '../widget/logo.dart';
 import '../widget/widget_endereco_page.dart';
 import 'menupage.dart';
 
@@ -17,17 +19,17 @@ class _EnderecosPage extends State<EnderecosPage> {
   bool apareceLista = false;
   bool apareceCasd = false;
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: backColor,
         appBar: AppBar(
-          backgroundColor: Colors.orange,
+          iconTheme: IconThemeData(color: useColor),
+          backgroundColor: appbarColor,
           title: Text(
             'Endereços',
             style: TextStyle(
-              color: Colors.white,
+              color: useColor,
             ),
           ),
           actions: [
@@ -45,13 +47,21 @@ class _EnderecosPage extends State<EnderecosPage> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 SizedBox(
-                  height: 30,
+                  height: 12,
+                ),
+                const Logo(
+                    height: 125,
+                    width: 125,
+                    image:
+                        "https://media.discordapp.net/attachments/569592762765410334/1009997591976611960/image-removebg-preview_5.png"),
+                SizedBox(
+                  height: 15,
                 ),
                 SizedBox(
                   width: 250,
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: useColor,
                     ),
                     onPressed: () {
                       setState(() {
@@ -61,7 +71,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                     },
                     child: Text('Listar',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: backColor,
                           fontSize: 30,
                         )),
                   ),
@@ -73,7 +83,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                   width: 250,
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: useColor,
                     ),
                     onPressed: () {
                       setState(() {
@@ -83,7 +93,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                     },
                     child: Text('Cadastrar',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: backColor,
                           fontSize: 30,
                         )),
                   ),
@@ -94,11 +104,11 @@ class _EnderecosPage extends State<EnderecosPage> {
                 SizedBox(
                   width: 250,
                   child: TextButton(
-                    style: TextButton.styleFrom(backgroundColor: Colors.orange),
+                    style: TextButton.styleFrom(backgroundColor: useColor),
                     onPressed: () {},
                     child: Text('Atualizar',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: backColor,
                           fontSize: 30,
                         )),
                   ),
@@ -110,13 +120,13 @@ class _EnderecosPage extends State<EnderecosPage> {
                   width: 250,
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: useColor,
                     ),
                     onPressed: () {},
                     child: Text(
                       'Excluir',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: backColor,
                         fontSize: 30,
                       ),
                     ),
@@ -132,26 +142,41 @@ class _EnderecosPage extends State<EnderecosPage> {
           ),
         ));
   }
+
   showLoaderDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
+      backgroundColor: backColor,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Deseja confirmar o cadastro do endereço?",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
+              color: useColor,
             ),
           ),
           SizedBox(
             height: 15,
           ),
-          Text("${ruaController.text} ${numeroController.text}"),
-          Text(bairroController.text),
-          Text(cepController.text),
-          Text("${localidadeController.text} - ${estadoController.text}"),
+          Text(
+            "${ruaController.text} ${numeroController.text}",
+            style: TextStyle(color: useColor),
+          ),
+          Text(
+            bairroController.text,
+            style: TextStyle(color: useColor),
+          ),
+          Text(
+            cepController.text,
+            style: TextStyle(color: useColor),
+          ),
+          Text(
+            "${localidadeController.text} - ${estadoController.text}",
+            style: TextStyle(color: useColor),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Center(
@@ -161,8 +186,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                   SizedBox(
                       width: 100,
                       child: TextButton(
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.orange),
+                        style: TextButton.styleFrom(backgroundColor: useColor),
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -170,7 +194,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                           'Cancelar',
                           style: TextStyle(
                             fontSize: 17,
-                            color: Colors.white,
+                            color: backColor,
                           ),
                         ),
                       )),
@@ -180,8 +204,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                   SizedBox(
                     width: 100,
                     child: TextButton(
-                      style:
-                      TextButton.styleFrom(backgroundColor: Colors.orange),
+                      style: TextButton.styleFrom(backgroundColor: useColor),
                       onPressed: () async {
                         var endereco = await EnderecoApi.postEndereco(
                             bairroController.text,
@@ -196,19 +219,25 @@ class _EnderecosPage extends State<EnderecosPage> {
                           showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
-                              title: const Text('Sucesso'),
+                              backgroundColor: backColor,
+                              title: Text(
+                                'Sucesso',
+                                style: TextStyle(color: useColor),
+                              ),
                               content: Text(
-                                  'Adicionou endereço com ID:${endereco.id}'),
+                                'Adicionou endereço com ID:${endereco.id}',
+                                style: TextStyle(color: useColor),
+                              ),
                               actions: <Widget>[
                                 TextButton(
                                   style: TextButton.styleFrom(
-                                      backgroundColor: Colors.orange),
+                                      backgroundColor: useColor),
                                   onPressed: () => Navigator.pop(context),
-                                  child: const Text(
+                                  child: Text(
                                     'Ok',
                                     style: TextStyle(
                                       fontSize: 17,
-                                      color: Colors.white,
+                                      color: backColor,
                                     ),
                                   ),
                                 )
@@ -221,7 +250,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                         'Confirmar',
                         style: TextStyle(
                           fontSize: 17,
-                          color: Colors.white,
+                          color: backColor,
                         ),
                       ),
                     ),
@@ -255,18 +284,21 @@ class _EnderecosPage extends State<EnderecosPage> {
                   child: TextField(
                     keyboardType: TextInputType.number,
                     controller: cepController,
+                    cursorColor: useColor,
                     decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(),
+                      labelStyle: TextStyle(color: useColor),
                       labelText: 'CEP',
-                      labelStyle: TextStyle(),
                     ),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
+                      color: useColor,
                     ),
                   ),
                 ),
                 Ink(
-                  decoration: const ShapeDecoration(
-                    color: Colors.orange,
+                  decoration: ShapeDecoration(
+                    color: useColor,
                     shape: CircleBorder(),
                   ),
                   child: IconButton(
@@ -280,7 +312,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                     icon: Icon(
                       Icons.search,
                     ),
-                    color: Colors.white,
+                    color: backColor,
                     splashColor: Colors.black,
                   ),
                 )
@@ -292,12 +324,15 @@ class _EnderecosPage extends State<EnderecosPage> {
                   width: 220,
                   child: TextField(
                     controller: ruaController,
+                    cursorColor: useColor,
                     decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(),
+                      labelStyle: TextStyle(color: useColor),
                       labelText: 'Rua',
-                      labelStyle: TextStyle(),
                     ),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
+                      color: useColor,
                     ),
                   ),
                 ),
@@ -308,12 +343,15 @@ class _EnderecosPage extends State<EnderecosPage> {
                   width: 100,
                   child: TextField(
                     controller: numeroController,
+                    cursorColor: useColor,
                     decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(),
+                      labelStyle: TextStyle(color: useColor),
                       labelText: 'Numero',
-                      labelStyle: TextStyle(),
                     ),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
+                      color: useColor,
                     ),
                   ),
                 ),
@@ -323,12 +361,15 @@ class _EnderecosPage extends State<EnderecosPage> {
               width: 340,
               child: TextField(
                 controller: bairroController,
+                cursorColor: useColor,
                 decoration: InputDecoration(
+                  focusedBorder: UnderlineInputBorder(),
+                  labelStyle: TextStyle(color: useColor),
                   labelText: 'Bairro',
-                  labelStyle: TextStyle(),
                 ),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
+                  color: useColor,
                 ),
               ),
             ),
@@ -340,12 +381,15 @@ class _EnderecosPage extends State<EnderecosPage> {
                     width: 220,
                     child: TextField(
                       controller: localidadeController,
+                      cursorColor: useColor,
                       decoration: InputDecoration(
+                        focusedBorder: UnderlineInputBorder(),
+                        labelStyle: TextStyle(color: useColor),
                         labelText: 'Cidade',
-                        labelStyle: TextStyle(),
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
+                        color: useColor,
                       ),
                     ),
                   ),
@@ -353,12 +397,15 @@ class _EnderecosPage extends State<EnderecosPage> {
                     width: 100,
                     child: TextField(
                       controller: estadoController,
+                      cursorColor: useColor,
                       decoration: InputDecoration(
+                        focusedBorder: UnderlineInputBorder(),
+                        labelStyle: TextStyle(color: useColor),
                         labelText: 'Estado',
-                        labelStyle: TextStyle(),
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
+                        color: useColor,
                       ),
                     ),
                   ),
@@ -374,8 +421,8 @@ class _EnderecosPage extends State<EnderecosPage> {
                     SizedBox(
                         width: 120,
                         child: TextButton(
-                          style: TextButton.styleFrom(
-                              backgroundColor: Colors.orange),
+                          style:
+                              TextButton.styleFrom(backgroundColor: useColor),
                           onPressed: () {
                             cepController.text = "";
                             numeroController.text = "";
@@ -388,7 +435,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                             'Limpar',
                             style: TextStyle(
                               fontSize: 20,
-                              color: Colors.white,
+                              color: backColor,
                             ),
                           ),
                         )),
@@ -398,18 +445,16 @@ class _EnderecosPage extends State<EnderecosPage> {
                     SizedBox(
                       width: 120,
                       child: TextButton(
-                        style: TextButton.styleFrom(
-                            backgroundColor: Colors.orange),
+                        style: TextButton.styleFrom(backgroundColor: useColor),
                         onPressed: () {
                           var enderecos = EnderecosPage;
                           showLoaderDialog(context);
-
                         },
                         child: Text(
                           'Cadastrar',
                           style: TextStyle(
                             fontSize: 20,
-                            color: Colors.white,
+                            color: backColor,
                           ),
                         ),
                       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tela_login_goga/domain/cores.dart';
 import 'package:tela_login_goga/pages/menupage.dart';
+import 'package:tela_login_goga/widget/logo.dart';
 import '../api/api_login.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,12 +21,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backColor,
       appBar: AppBar(
-        backgroundColor: Colors.amber,
-        title: const Text(
-          'Base Equipamentos',
+        backgroundColor: appbarColor,
+        title: Text(
+          'Base Acabamentos',
           style: TextStyle(
-            color: Colors.white,
+            color: useColor,
           ),
         ),
       ),
@@ -35,19 +38,26 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.network(
-                  height: 125,
-                  width: 125,
-                  "https://media.discordapp.net/attachments/569592762765410334/1009997591976611960/image-removebg-preview_5.png"),
+              const Logo(
+                  height: 170,
+                  width: 170,
+                  image:
+                      "https://media.discordapp.net/attachments/569592762765410334/1009997591976611960/image-removebg-preview_5.png"),
               SizedBox(
                 height: 15,
               ),
               TextField(
+                cursorColor: useColor,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  labelStyle: TextStyle(),
-                  prefixIcon: Icon(Icons.mail),
+                decoration: InputDecoration(
+                  hintText: 'Email',
+                  hintStyle: TextStyle(
+                    color: useColor,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.mail,
+                    color: useColor,
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(),
                   ),
@@ -55,8 +65,9 @@ class _HomePageState extends State<HomePage> {
                     borderSide: BorderSide(),
                   ),
                 ),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
+                  color: useColor,
                 ),
                 controller: userController,
               ),
@@ -64,11 +75,17 @@ class _HomePageState extends State<HomePage> {
                 height: 8,
               ),
               TextField(
+                cursorColor: useColor,
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Senha',
-                  labelStyle: TextStyle(),
-                  prefixIcon: Icon(Icons.lock),
+                decoration: InputDecoration(
+                  hintText: 'Senha',
+                  hintStyle: TextStyle(
+                    color: useColor,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: useColor,
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(),
                   ),
@@ -76,42 +93,43 @@ class _HomePageState extends State<HomePage> {
                     borderSide: BorderSide(),
                   ),
                 ),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
+                  color: useColor,
                 ),
                 controller: passwordController,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: SizedBox(
-                  width: 120,
-                  child: TextButton(
-                    onPressed: () async {
-                      showLoaderDialog(context);
-                      var usuario = await LoginApi.login(
-                          userController.text, passwordController.text);
-                      Navigator.pop(context);
-                      if (usuario?.accessToken == null) {
-                        Get.snackbar(
-                          'Falha',
-                          'Email ou Senha incorreto.',
-                          backgroundColor: Colors.red,
-                          colorText: Colors.white,
-                          snackPosition: SnackPosition.TOP,
-                        );
-                      }
-                      if (usuario?.accessToken != null)
-                        return Get.off(() => MenuPage());
-                    },
-                    style: TextButton.styleFrom(backgroundColor: Colors.amber),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.white,
-                        ),
+              SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                width: 120,
+                child: TextButton(
+                  onPressed: () async {
+                    showLoaderDialog(context);
+                    var usuario = await LoginApi.login(
+                        userController.text, passwordController.text);
+                    Navigator.pop(context);
+                    if (usuario?.accessToken == null) {
+                      Get.snackbar(
+                        'Falha',
+                        'Email ou Senha incorreto.',
+                        backgroundColor: Colors.red,
+                        colorText: appbarColor,
+                        snackPosition: SnackPosition.TOP,
+                      );
+                    }
+                    if (usuario?.accessToken != null)
+                      return Get.off(() => MenuPage());
+                  },
+                  style: TextButton.styleFrom(backgroundColor: useColor),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: backColor,
                       ),
                     ),
                   ),
