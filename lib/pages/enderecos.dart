@@ -1,12 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:tela_login_goga/domain/endereco.dart';
-
 import '../api/api_cep.dart';
 import '../api/api_endereco.dart';
-import '../domain/cep.dart';
+import '../widget/widget_endereco_page.dart';
 import 'menupage.dart';
 
 class EnderecosPage extends StatefulWidget {
@@ -19,6 +16,8 @@ class EnderecosPage extends StatefulWidget {
 class _EnderecosPage extends State<EnderecosPage> {
   bool apareceLista = false;
   bool apareceCasd = false;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +47,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                 SizedBox(
                   height: 30,
                 ),
-                Container(
+                SizedBox(
                   width: 250,
                   child: TextButton(
                     style: TextButton.styleFrom(
@@ -70,7 +69,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                 SizedBox(
                   height: 10,
                 ),
-                Container(
+                SizedBox(
                   width: 250,
                   child: TextButton(
                     style: TextButton.styleFrom(
@@ -92,7 +91,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                 SizedBox(
                   height: 10,
                 ),
-                Container(
+                SizedBox(
                   width: 250,
                   child: TextButton(
                     style: TextButton.styleFrom(backgroundColor: Colors.orange),
@@ -107,7 +106,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                 SizedBox(
                   height: 10,
                 ),
-                Container(
+                SizedBox(
                   width: 250,
                   child: TextButton(
                     style: TextButton.styleFrom(
@@ -133,98 +132,115 @@ class _EnderecosPage extends State<EnderecosPage> {
           ),
         ));
   }
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Deseja confirmar o cadastro do endereço?",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Text("${ruaController.text} ${numeroController.text}"),
+          Text(bairroController.text),
+          Text(cepController.text),
+          Text("${localidadeController.text} - ${estadoController.text}"),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                      width: 100,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.orange),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'Cancelar',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  SizedBox(
+                    width: 100,
+                    child: TextButton(
+                      style:
+                      TextButton.styleFrom(backgroundColor: Colors.orange),
+                      onPressed: () async {
+                        var endereco = await EnderecoApi.postEndereco(
+                            bairroController.text,
+                            cepController.text,
+                            localidadeController.text,
+                            ruaController.text,
+                            numeroController.text,
+                            estadoController.text);
+                        Navigator.pop(context);
 
-  listaEndereco() {
-    Future<List<Endereco?>?> endereco = EnderecoApi.getEndereco();
-    return FutureBuilder(
-        future: endereco,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-            case ConnectionState.none:
-              return Container(
-                alignment: Alignment.center,
-                child: const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-                  strokeWidth: 5.0,
-                ),
-              );
-            default:
-              if (snapshot.hasError) {
-                return Container(
-                  width: 250,
-                  height: 50,
-                  color: Colors.red,
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Falha na Requisão',
-                    style: TextStyle(
-                      fontSize: 25,
-                      color: Colors.white,
+                        if (endereco!.id != null) {
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Sucesso'),
+                              content: Text(
+                                  'Adicionou endereço com ID:${endereco.id}'),
+                              actions: <Widget>[
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      backgroundColor: Colors.orange),
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text(
+                                    'Ok',
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                      child: Text(
+                        'Confirmar',
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
-                );
-              } else {
-                List<Endereco>? endereco = snapshot.data as List<Endereco>?;
-                return listView(endereco);
-              }
-          }
-        });
-  }
-
-  listView(endereco) {
-    return SingleChildScrollView(
-      child: ListView.builder(
-        physics: ClampingScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: endereco.length,
-        itemBuilder: (context, index) {
-          Endereco p = endereco[index];
-          return Card(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  width: 340,
-                  height: 40,
-                  alignment: Alignment.centerLeft,
-                  color: Colors.orange,
-                  child: Text(
-                    '  ID: ${p.id.toString()}',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                Text(
-                  'CEP: ${p.cep.toString()}',
-                  style: TextStyle(fontSize: 20),
-                ),
-                Text(
-                  p.localidade.toString(),
-                  style: TextStyle(fontSize: 20),
-                ),
-                Text(
-                  p.logradouro.toString(),
-                  style: TextStyle(fontSize: 20),
-                ),
-                Text(
-                  'Nº: ${p.numero.toString()}',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
-
-  TextEditingController cepController = TextEditingController();
-  TextEditingController numeroController = TextEditingController();
-  TextEditingController ruaController = TextEditingController();
-  TextEditingController bairroController = TextEditingController();
-  TextEditingController localidadeController = TextEditingController();
-  TextEditingController estadoController = TextEditingController();
 
   cadastraEnd() {
     return SingleChildScrollView(
@@ -234,7 +250,7 @@ class _EnderecosPage extends State<EnderecosPage> {
           children: [
             Row(
               children: [
-                Container(
+                SizedBox(
                   width: 260,
                   child: TextField(
                     keyboardType: TextInputType.number,
@@ -272,7 +288,7 @@ class _EnderecosPage extends State<EnderecosPage> {
             ),
             Row(
               children: [
-                Container(
+                SizedBox(
                   width: 220,
                   child: TextField(
                     controller: ruaController,
@@ -288,7 +304,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                 SizedBox(
                   width: 8,
                 ),
-                Container(
+                SizedBox(
                   width: 100,
                   child: TextField(
                     controller: numeroController,
@@ -303,7 +319,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                 ),
               ],
             ),
-            Container(
+            SizedBox(
               width: 340,
               child: TextField(
                 controller: bairroController,
@@ -320,7 +336,7 @@ class _EnderecosPage extends State<EnderecosPage> {
               padding: const EdgeInsets.only(bottom: 5),
               child: Row(
                 children: [
-                  Container(
+                  SizedBox(
                     width: 220,
                     child: TextField(
                       controller: localidadeController,
@@ -333,7 +349,7 @@ class _EnderecosPage extends State<EnderecosPage> {
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: 100,
                     child: TextField(
                       controller: estadoController,
@@ -351,52 +367,55 @@ class _EnderecosPage extends State<EnderecosPage> {
             ),
             Padding(
               padding: EdgeInsets.only(bottom: 10),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 30,
-                  ),
-                  SizedBox(
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                        width: 120,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                              backgroundColor: Colors.orange),
+                          onPressed: () {
+                            cepController.text = "";
+                            numeroController.text = "";
+                            ruaController.text = "";
+                            bairroController.text = "";
+                            localidadeController.text = "";
+                            estadoController.text = "";
+                          },
+                          child: Text(
+                            'Limpar',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    SizedBox(
                       width: 120,
                       child: TextButton(
                         style: TextButton.styleFrom(
                             backgroundColor: Colors.orange),
-
                         onPressed: () {
-                          cepController.text = "";
-                          numeroController.text = "";
-                          ruaController.text = "";
-                          bairroController.text = "";
-                          localidadeController.text = "";
-                          estadoController.text = "";
+                          var enderecos = EnderecosPage;
+                          showLoaderDialog(context);
+
                         },
                         child: Text(
-                          'Limpar',
+                          'Cadastrar',
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.white,
                           ),
                         ),
-                      )),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: TextButton(
-                      style:
-                          TextButton.styleFrom(backgroundColor: Colors.orange),
-                      onPressed: () {},
-                      child: Text(
-                        'Cadastrar',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             )
           ],
