@@ -143,17 +143,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   showLoaderDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
+    AlertDialog alert = AlertDialog(backgroundColor: backColor,
       content: Row(
         children: [
-          const CircularProgressIndicator(),
+          CircularProgressIndicator(
+            color: useColor,
+          ),
           Container(
             margin: const EdgeInsets.only(left: 30),
-            child: const Text(
+            child: Text(
               "Aguarde...",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
+                color: useColor,
               ),
             ),
           ),
