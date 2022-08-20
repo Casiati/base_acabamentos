@@ -37,6 +37,7 @@ dependencies:
   http:
   shared_preferences:
   get:
+  flutter_slidable: 0.6.0
 
 dev_dependencies:
   flutter_test:

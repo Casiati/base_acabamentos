@@ -9,18 +9,20 @@ class Cep {
   String? gia;
   String? ddd;
   String? siafi;
+  bool? erro;
 
   Cep(
       {this.cep,
-        this.logradouro,
-        this.complemento,
-        this.bairro,
-        this.localidade,
-        this.uf,
-        this.ibge,
-        this.gia,
-        this.ddd,
-        this.siafi});
+      this.logradouro,
+      this.complemento,
+      this.bairro,
+      this.localidade,
+      this.uf,
+      this.ibge,
+      this.gia,
+      this.ddd,
+      this.siafi,
+      this.erro});
 
   Cep.fromJson(Map<String, dynamic> json) {
     cep = json['cep'];
@@ -33,6 +35,7 @@ class Cep {
     gia = json['gia'];
     ddd = json['ddd'];
     siafi = json['siafi'];
+    erro = json['erro'];
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +50,7 @@ class Cep {
     data['gia'] = this.gia;
     data['ddd'] = this.ddd;
     data['siafi'] = this.siafi;
+    data['erro'] = this.erro;
     return data;
   }
 }

@@ -10,19 +10,25 @@ class CepApi {
     var url = Uri.parse('https://viacep.com.br/ws/$getCep/json/');
     var response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      utf8.decode(response.bodyBytes);
-      Map<String, dynamic> mapResponse =
-          json.decode(utf8.decode(response.bodyBytes));
-      var cep = Cep.fromJson(mapResponse);
-      print(cep.localidade);
-      return cep;
-    } else {
+
+    print(response.statusCode);
+    print(response.body);
+
+
+
+   if (response.statusCode != 200 || response.body.contains("erro")) {
       Get.snackbar(
           'CEP Incorreto', 'Digite o CEP de 8 digitos com apenas numeros',
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM);
+          snackPosition: SnackPosition.BOTTOM);}
+    else {
+      Map<String, dynamic> mapResponse =
+      json.decode(response.body);
+      var cep = Cep.fromJson(mapResponse);
+      return cep;}
+
+
     }
   }
-}
+
