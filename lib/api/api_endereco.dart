@@ -5,8 +5,6 @@ import '../domain/endereco.dart';
 import '../domain/usuario.dart';
 
 class EnderecoApi {
-
-
   static Future<List<Endereco?>?> getEndereco() async {
     final prefs = await SharedPreferences.getInstance();
     var jUsuario = prefs.getString("jUsuario");
@@ -50,7 +48,6 @@ class EnderecoApi {
     Map<String, dynamic> idResponse =
         json.decode(utf8.decode(response.bodyBytes));
     var endereco = Endereco.fromJson(idResponse);
-    print(endereco.id);
     return endereco;
   }
 
@@ -72,13 +69,10 @@ class EnderecoApi {
 
     var url = Uri.parse('https://tanilo.herokuapp.com/enderecos/$id');
     var response = await http.put(url, headers: headers, body: body);
-    print(body);
-    print(response.statusCode);
     utf8.decode(response.bodyBytes);
     Map<String, dynamic> id2Response =
         json.decode(utf8.decode(response.bodyBytes));
     var endereco = Endereco.fromJson(id2Response);
-    print(endereco.id);
     return endereco;
   }
 
@@ -94,11 +88,9 @@ class EnderecoApi {
       "Content-Type": "application/json"
     };
 
-
-
     var url = Uri.parse('https://tanilo.herokuapp.com/enderecos/$id');
-    var response = await http.delete(url, headers: headers);
-    print(response.statusCode);
+    await http.delete(url, headers: headers);
+    return null;
 
 
   }

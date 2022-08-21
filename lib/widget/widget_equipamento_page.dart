@@ -1,133 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import '../api/api_cep.dart';
-import '../api/api_endereco.dart';
+import '../api/api_equipamento.dart';
 import '../domain/cores.dart';
-import '../domain/endereco.dart';
+import '../domain/equipamento.dart';
 
 int? iD;
-List<Endereco> endereco = [];
+List<Equipamento> equipamento = [];
 bool isSorted = false;
-
 
 cadastraEnd(BuildContext context, botao, atualLista) {
   return SingleChildScrollView(
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              SizedBox(
-                width: 260,
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  controller: cepController,
-                  cursorColor: useColor,
-                  decoration: InputDecoration(
-                    focusedBorder: const UnderlineInputBorder(),
-                    labelStyle: TextStyle(color: useColor),
-                    labelText: 'CEP',
-                  ),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: useColor,
-                  ),
+      child: Center(
+        child: Column(
+          children: [
+            SizedBox(
+              width: 330,
+              child: TextField(
+                controller: nomeController,
+                cursorColor: useColor,
+                decoration: InputDecoration(
+                  focusedBorder: const UnderlineInputBorder(),
+                  labelStyle: TextStyle(color: useColor, fontSize: 14),
+                  labelText: 'Nome',
                 ),
-              ),
-              Ink(
-                decoration: ShapeDecoration(
+                style: TextStyle(
+                  fontSize: 18,
                   color: useColor,
-                  shape: const CircleBorder(),
                 ),
-                child: IconButton(
-                  onPressed: () async {
-                    var cep = await CepApi.getCep(cepController.text);
-                    if (cep != null) {
-                      ruaController.text = cep.logradouro!;
-                      bairroController.text = cep.bairro!;
-                      localidadeController.text = cep.localidade!;
-                      estadoController.text = cep.uf!;
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.search,
-                  ),
-                  color: backColor,
-                  splashColor: Colors.black,
-                ),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 220,
-                child: TextField(
-                  controller: ruaController,
-                  cursorColor: useColor,
-                  decoration: InputDecoration(
-                    focusedBorder: const UnderlineInputBorder(),
-                    labelStyle: TextStyle(color: useColor),
-                    labelText: 'Rua',
-                  ),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: useColor,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              SizedBox(
-                width: 100,
-                child: TextField(
-                  controller: numeroController,
-                  cursorColor: useColor,
-                  decoration: InputDecoration(
-                    focusedBorder: const UnderlineInputBorder(),
-                    labelStyle: TextStyle(color: useColor),
-                    labelText: 'Numero',
-                  ),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: useColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            width: 340,
-            child: TextField(
-              controller: bairroController,
-              cursorColor: useColor,
-              decoration: InputDecoration(
-                focusedBorder: const UnderlineInputBorder(),
-                labelStyle: TextStyle(color: useColor),
-                labelText: 'Bairro',
-              ),
-              style: TextStyle(
-                fontSize: 18,
-                color: useColor,
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5),
-            child: Row(
+            Row(
               children: [
                 SizedBox(
-                  width: 220,
+                  width: 150,
                   child: TextField(
-                    controller: localidadeController,
+                    keyboardType: TextInputType.number,
+                    controller: valorDaCompraController,
                     cursorColor: useColor,
                     decoration: InputDecoration(
                       focusedBorder: const UnderlineInputBorder(),
-                      labelStyle: TextStyle(color: useColor),
-                      labelText: 'Cidade',
+                      labelStyle: TextStyle(color: useColor, fontSize: 14),
+                      labelText: 'Compra',
+                      prefixText: 'R\$ ',
+                      prefixStyle: TextStyle(
+                        fontSize: 18,
+                        color: useColor,
+                      ),
                     ),
                     style: TextStyle(
                       fontSize: 18,
@@ -135,15 +56,24 @@ cadastraEnd(BuildContext context, botao, atualLista) {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  width: 19,
+                ),
                 SizedBox(
-                  width: 100,
+                  width: 150,
                   child: TextField(
-                    controller: estadoController,
+                    keyboardType: TextInputType.number,
+                    controller: valorAluguelDiaController,
                     cursorColor: useColor,
                     decoration: InputDecoration(
                       focusedBorder: const UnderlineInputBorder(),
-                      labelStyle: TextStyle(color: useColor),
-                      labelText: 'Estado',
+                      labelStyle: TextStyle(color: useColor, fontSize: 14),
+                      labelText: 'Aluguel Dia',
+                      prefixText: 'R\$ ',
+                      prefixStyle: TextStyle(
+                        fontSize: 18,
+                        color: useColor,
+                      ),
                     ),
                     style: TextStyle(
                       fontSize: 18,
@@ -153,75 +83,128 @@ cadastraEnd(BuildContext context, botao, atualLista) {
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Center(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(
-                      width: 120,
-                      child: TextButton(
-                        style:
-                        TextButton.styleFrom(backgroundColor: useColor),
-                        onPressed: () {
-                          cepController.text = "";
-                          numeroController.text = "";
-                          ruaController.text = "";
-                          bairroController.text = "";
-                          localidadeController.text = "";
-                          estadoController.text = "";
-                        },
-                        child: Text(
-                          'Limpar',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: backColor,
-                          ),
+                    width: 150,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      controller: valorAluguelQuinzenaController,
+                      cursorColor: useColor,
+                      decoration: InputDecoration(
+                        focusedBorder: const UnderlineInputBorder(),
+                        labelStyle: TextStyle(color: useColor, fontSize: 14),
+                        labelText: 'Aluguel Quinzena',
+                        prefixText: 'R\$ ',
+                        prefixStyle: TextStyle(
+                          fontSize: 18,
+                          color: useColor,
                         ),
-                      )),
+                      ),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: useColor,
+                      ),
+                    ),
+                  ),
                   const SizedBox(
-                    width: 30,
+                    width: 19,
                   ),
                   SizedBox(
-                    width: 120,
-                    child: TextButton(
-                      style: TextButton.styleFrom(backgroundColor: useColor),
-                      onPressed: () {
-                        if (cepController.text == "" ||
-                            numeroController.text == "" ||
-                            ruaController.text == "" ||
-                            bairroController.text == "" ||
-                            localidadeController.text == "" ||
-                            estadoController.text == "") {
-                          Get.snackbar('Campo em branco',
-                              'Preencha todos os campos para poder adicionar',
-                              backgroundColor: Colors.red,
-                              colorText: Colors.white,
-                              snackPosition: SnackPosition.BOTTOM);
-                        } else {
-                          showLoaderDialog(context, botao, atualLista);
-                        }
-                      },
-                      child: Text(
-                        'Confirmar',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: backColor,
+                    width: 150,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      controller: valorAluguelMesController,
+                      cursorColor: useColor,
+                      decoration: InputDecoration(
+                        focusedBorder: const UnderlineInputBorder(),
+                        labelStyle: TextStyle(color: useColor, fontSize: 14),
+                        labelText: 'Aluguel Mes',
+                        prefixText: 'R\$ ',
+                        prefixStyle: TextStyle(
+                          fontSize: 18,
+                          color: useColor,
                         ),
+                      ),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: useColor,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-          )
-        ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                        width: 119,
+                        child: TextButton(
+                          style:
+                              TextButton.styleFrom(backgroundColor: useColor),
+                          onPressed: () {
+                            nomeController.text = "";
+                            valorDaCompraController.text = "";
+                            valorAluguelDiaController.text = "";
+                            valorAluguelQuinzenaController.text = "";
+                            valorAluguelMesController.text = "";
+                          },
+                          child: Text(
+                            'Limpar',
+                            style: TextStyle(
+                              fontSize: 19,
+                              color: backColor,
+                            ),
+                          ),
+                        )),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    SizedBox(
+                      width: 119,
+                      child: TextButton(
+                        style: TextButton.styleFrom(backgroundColor: useColor),
+                        onPressed: () {
+                          if (nomeController.text == "" ||
+                              valorDaCompraController.text == "" ||
+                              valorAluguelDiaController.text == "" ||
+                              valorAluguelQuinzenaController.text == "" ||
+                              valorAluguelMesController.text == "") {
+                            Get.snackbar('Campo em branco',
+                                'Preencha todos os campos para poder adicionar',
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                                snackPosition: SnackPosition.BOTTOM);
+                          } else {
+                            showLoaderDialog(context, botao, atualLista);
+                          }
+                        },
+                        child: Text(
+                          'Confirmar',
+                          style: TextStyle(
+                            fontSize: 19,
+                            color: backColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );
 }
+
 showLoaderDialog(BuildContext context, botao, atualLista) {
   AlertDialog alert = AlertDialog(
     backgroundColor: backColor,
@@ -231,18 +214,18 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
       children: [
         if (botao == 1)
           Text(
-            "Deseja cadastrar este endereço?",
+            "Deseja cadastrar este Equipamento?",
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 19,
               fontWeight: FontWeight.w500,
               color: useColor,
             ),
           )
         else
           Text(
-            "Deseja atualizar este endereço?",
+            "Deseja atualizar este Equipamento?",
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 19,
               fontWeight: FontWeight.w500,
               color: useColor,
             ),
@@ -251,19 +234,23 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
           height: 15,
         ),
         Text(
-          "${ruaController.text} ${numeroController.text}",
+          nomeController.text,
           style: TextStyle(color: useColor),
         ),
         Text(
-          bairroController.text,
+          "Compra: R\$${valorDaCompraController.text}",
           style: TextStyle(color: useColor),
         ),
         Text(
-          cepController.text,
+          'Aluguel dia: R\$${valorAluguelDiaController.text}',
           style: TextStyle(color: useColor),
         ),
         Text(
-          "${localidadeController.text} - ${estadoController.text}",
+          'Aluguel Quinzena: R\$${valorAluguelQuinzenaController.text}',
+          style: TextStyle(color: useColor),
+        ),
+        Text(
+          'Aluguel Mês: R\$${valorAluguelMesController.text}',
           style: TextStyle(color: useColor),
         ),
         Padding(
@@ -297,16 +284,17 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
                     child: TextButton(
                       style: TextButton.styleFrom(backgroundColor: useColor),
                       onPressed: () async {
-                        var endereco = await EnderecoApi.postEndereco(
-                            bairroController.text,
-                            cepController.text,
-                            localidadeController.text,
-                            ruaController.text,
-                            numeroController.text,
-                            estadoController.text);
+                        var equipamento = await EquipamentoApi.postEquipamento(
+                            nomeController.text.replaceAll(",", "."),
+                            valorDaCompraController.text.replaceAll(",", "."),
+                            valorAluguelQuinzenaController.text
+                                .replaceAll(",", "."),
+                            valorAluguelDiaController.text.replaceAll(",", "."),
+                            valorAluguelMesController.text
+                                .replaceAll(",", "."));
                         Navigator.pop(context);
 
-                        if (endereco!.id != null) {
+                        if (equipamento!.id != null) {
                           showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
@@ -316,7 +304,7 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
                                 style: TextStyle(color: useColor),
                               ),
                               content: Text(
-                                'Adicionou endereço com ID:${endereco.id}',
+                                'Adicionou equipamento com ID:${equipamento.id}',
                                 style: TextStyle(color: useColor),
                               ),
                               actions: <Widget>[
@@ -353,17 +341,18 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
                       style: TextButton.styleFrom(backgroundColor: useColor),
                       onPressed: () async {
                         print(iD);
-                        var endereco = await EnderecoApi.putEndereco(
-                            bairroController.text,
-                            cepController.text,
+                        var equipamento = await EquipamentoApi.putEquipamento(
+                            nomeController.text.replaceAll(",", "."),
                             iD,
-                            localidadeController.text,
-                            ruaController.text,
-                            numeroController.text,
-                            estadoController.text);
+                            valorDaCompraController.text.replaceAll(",", "."),
+                            valorAluguelQuinzenaController.text
+                                .replaceAll(",", "."),
+                            valorAluguelDiaController.text.replaceAll(",", "."),
+                            valorAluguelMesController.text
+                                .replaceAll(",", "."));
                         Navigator.pop(context);
 
-                        if (endereco!.id != null) {
+                        if (equipamento!.id != null) {
                           showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
@@ -373,7 +362,7 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
                                 style: TextStyle(color: useColor),
                               ),
                               content: Text(
-                                'Atualizou endereço com ID:${endereco.id}',
+                                'Atualizou equipamento com ID:${equipamento.id}',
                                 style: TextStyle(color: useColor),
                               ),
                               actions: <Widget>[
@@ -419,10 +408,10 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
   );
 }
 
-listaEndereco(apcLista, apcCadas, apcAtual(p), atualLista) {
-  Future<List<Endereco?>?> endereco = EnderecoApi.getEndereco();
+listaEquipamento(apcLista, apcCadas, apcAtual(p), atualLista) {
+  Future<List<Equipamento?>?> equipamento = EquipamentoApi.getEquipamento();
   return FutureBuilder(
-      future: endereco,
+      future: equipamento,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -453,9 +442,10 @@ listaEndereco(apcLista, apcCadas, apcAtual(p), atualLista) {
                 ),
               );
             } else {
-              List<Endereco>? endereco = snapshot.data as List<Endereco>?;
+              List<Equipamento>? equipamento =
+                  snapshot.data as List<Equipamento>?;
               return listView(
-                  endereco, apcLista, apcCadas, apcAtual, atualLista);
+                  equipamento, apcLista, apcCadas, apcAtual, atualLista);
             }
         }
       });
@@ -463,23 +453,24 @@ listaEndereco(apcLista, apcCadas, apcAtual(p), atualLista) {
 
 sort() {
   if (!isSorted) {
-    endereco.sort((Endereco b, Endereco a) => a.id!.compareTo(b.id!));
+    equipamento.sort((Equipamento b, Equipamento a) => a.id!.compareTo(b.id!));
     isSorted = true;
-
-  } else {endereco = endereco.reversed.toList();
+  } else {
+    equipamento = equipamento.reversed.toList();
   }
 }
 
-listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
+listView(equipamento, apcLista, apcCadas, apcAtual(p), atualLista) {
   return SingleChildScrollView(
     child: ListView.builder(
       physics: const ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      itemCount: endereco.length,
+      itemCount: equipamento.length,
       itemBuilder: (context, index) {
-        endereco.sort((Endereco b, Endereco a) => a.id!.compareTo(b.id!));
-        Endereco p = endereco[index];
+        equipamento
+            .sort((Equipamento b, Equipamento a) => a.id!.compareTo(b.id!));
+        Equipamento p = equipamento[index];
         return Slidable(
           actionExtentRatio: 0.25,
           actionPane: const SlidableDrawerDismissal(),
@@ -494,7 +485,7 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                   builder: (BuildContext context) => AlertDialog(
                     backgroundColor: backColor,
                     title: Text(
-                      'Deseja EDITAR este endereço?',
+                      'Deseja EDITAR este equipamento?',
                       style: TextStyle(color: useColor),
                     ),
                     content: SingleChildScrollView(
@@ -505,19 +496,23 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.logradouro} Nº${p.numero}',
+                            '${p.nome}',
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.bairro}',
+                            "Compra: R\$${p.valorDaCompra!.toStringAsFixed(2).replaceAll('.', ',')}",
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.cep}',
+                            'Aluguel dia: R\$${p.valorAluguelDia!.toStringAsFixed(2).replaceAll('.', ',')}',
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.localidade} - ${p.uf}',
+                            'Aluguel Quinzena: R\$${p.valorAluguelQuinzena!.toStringAsFixed(2).replaceAll('.', ',')}',
+                            style: TextStyle(color: useColor),
+                          ),
+                          Text(
+                            'Aluguel Mês: R\$${p.valorAluguelMes!.toStringAsFixed(2).replaceAll('.', ',')}',
                             style: TextStyle(color: useColor),
                           ),
                         ],
@@ -553,9 +548,7 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                               child: TextButton(
                                 style: TextButton.styleFrom(
                                     backgroundColor: useColor),
-                                onPressed: () {
-                                  apcAtual(p);
-                                },
+                                onPressed: () => apcAtual(p),
                                 child: Text(
                                   'Confirmar',
                                   style: TextStyle(
@@ -586,7 +579,7 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                   builder: (BuildContext context) => AlertDialog(
                     backgroundColor: backColor,
                     title: Text(
-                      'Deseja DELETAR este endereço?',
+                      'Deseja DELETAR este equipamento?',
                       style: TextStyle(color: useColor),
                     ),
                     content: SingleChildScrollView(
@@ -597,19 +590,23 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.logradouro} Nº${p.numero}',
+                            '${p.nome}',
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.bairro}',
+                            "Compra: R\$${p.valorDaCompra!.toStringAsFixed(2).replaceAll('.', ',')}",
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.cep}',
+                            'Aluguel dia: R\$${p.valorAluguelDia!.toStringAsFixed(2).replaceAll('.', ',')}',
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.localidade} - ${p.uf}',
+                            'Aluguel Quinzena: R\$${p.valorAluguelQuinzena!.toStringAsFixed(2).replaceAll('.', ',')}',
+                            style: TextStyle(color: useColor),
+                          ),
+                          Text(
+                            'Aluguel Mês: R\$${p.valorAluguelMes!.toStringAsFixed(2).replaceAll('.', ',')}',
                             style: TextStyle(color: useColor),
                           ),
                         ],
@@ -646,7 +643,7 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                                 style: TextButton.styleFrom(
                                     backgroundColor: useColor),
                                 onPressed: () async {
-                                  await EnderecoApi.deleteEndereco(p.id);
+                                  await EquipamentoApi.deleteEquipamento(p.id);
                                   Navigator.pop(context);
                                   print(p.id);
                                   if (p.id != null) {
@@ -654,30 +651,30 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                                       context: context,
                                       builder: (BuildContext context) =>
                                           AlertDialog(
-                                            backgroundColor: backColor,
-                                            title: Text(
-                                              'Sucesso',
-                                              style: TextStyle(color: useColor),
+                                        backgroundColor: backColor,
+                                        title: Text(
+                                          'Sucesso',
+                                          style: TextStyle(color: useColor),
+                                        ),
+                                        content: Text(
+                                          'Deletou Equipamento com ID:${p.id}',
+                                          style: TextStyle(color: useColor),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            style: TextButton.styleFrom(
+                                                backgroundColor: useColor),
+                                            onPressed: atualLista,
+                                            child: Text(
+                                              'Ok',
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color: backColor,
+                                              ),
                                             ),
-                                            content: Text(
-                                              'Deletou endereço com ID:${p.id}',
-                                              style: TextStyle(color: useColor),
-                                            ),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                    backgroundColor: useColor),
-                                                onPressed: atualLista,
-                                                child: Text(
-                                                  'Ok',
-                                                  style: TextStyle(
-                                                    fontSize: 17,
-                                                    color: backColor,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
+                                          )
+                                        ],
+                                      ),
                                     );
                                   }
                                   ;
@@ -704,7 +701,7 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
           child: Card(
             color: appbarColor,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -719,27 +716,101 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       '  ID: ${p.id.toString()}',
-                      style: TextStyle(fontSize: 20, color: backColor),
+                      style: TextStyle(
+                          fontSize: 19,
+                          color: backColor,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
                   const SizedBox(
                     height: 12,
                   ),
-                  Text(
-                    'CEP: ${p.cep.toString()}',
-                    style: TextStyle(fontSize: 20, color: useColor),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      p.nome.toString(),
+                      style: TextStyle(
+                          fontSize: 23,
+                          color: useColor,
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
-                  Text(
-                    p.localidade.toString(),
-                    style: TextStyle(fontSize: 20, color: useColor),
+                  const SizedBox(
+                    height: 12,
                   ),
-                  Text(
-                    p.logradouro.toString(),
-                    style: TextStyle(fontSize: 20, color: useColor),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Compra:',
+                          style: TextStyle(
+                              fontSize: 19,
+                              color: useColor,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          " R\$${(p.valorDaCompra!.toStringAsFixed(2).replaceAll('.', ','))}",
+                          style: TextStyle(fontSize: 19, color: useColor),
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(
-                    'Nº: ${p.numero.toString()}',
-                    style: TextStyle(fontSize: 20, color: useColor),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Aluguel Dia:',
+                          style: TextStyle(
+                              fontSize: 19,
+                              color: useColor,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          " R\$${(p.valorAluguelDia!.toStringAsFixed(2).replaceAll('.', ','))}",
+                          style: TextStyle(fontSize: 19, color: useColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Aluguel Quinzena:',
+                          style: TextStyle(
+                              fontSize: 19,
+                              color: useColor,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          ' R\$${(p.valorAluguelQuinzena!.toStringAsFixed(2).replaceAll('.', ','))}',
+                          style: TextStyle(fontSize: 19, color: useColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Aluguel Mês:',
+                          style: TextStyle(
+                              fontSize: 19,
+                              color: useColor,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Container(
+                          child: Text(
+                            ' R\$${(p.valorAluguelMes!.toStringAsFixed(2).replaceAll('.', ','))}',
+                            style: TextStyle(fontSize: 19, color: useColor),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -751,9 +822,8 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
   );
 }
 
-TextEditingController cepController = TextEditingController();
-TextEditingController numeroController = TextEditingController();
-TextEditingController ruaController = TextEditingController();
-TextEditingController bairroController = TextEditingController();
-TextEditingController localidadeController = TextEditingController();
-TextEditingController estadoController = TextEditingController();
+TextEditingController nomeController = TextEditingController();
+TextEditingController valorDaCompraController = TextEditingController();
+TextEditingController valorAluguelDiaController = TextEditingController();
+TextEditingController valorAluguelQuinzenaController = TextEditingController();
+TextEditingController valorAluguelMesController = TextEditingController();

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import '../api/api_cep.dart';
-import '../api/api_endereco.dart';
+import '../api/api_cliente.dart';
 import '../domain/cores.dart';
-import '../domain/endereco.dart';
+import '../domain/cliente.dart';
 
 int? iD;
-List<Endereco> endereco = [];
+List<Cliente> cliente = [];
 bool isSorted = false;
-
 
 cadastraEnd(BuildContext context, botao, atualLista) {
   return SingleChildScrollView(
@@ -23,7 +21,7 @@ cadastraEnd(BuildContext context, botao, atualLista) {
                 width: 260,
                 child: TextField(
                   keyboardType: TextInputType.number,
-                  controller: cepController,
+                  controller: idEnderecoController,
                   cursorColor: useColor,
                   decoration: InputDecoration(
                     focusedBorder: const UnderlineInputBorder(),
@@ -36,28 +34,6 @@ cadastraEnd(BuildContext context, botao, atualLista) {
                   ),
                 ),
               ),
-              Ink(
-                decoration: ShapeDecoration(
-                  color: useColor,
-                  shape: const CircleBorder(),
-                ),
-                child: IconButton(
-                  onPressed: () async {
-                    var cep = await CepApi.getCep(cepController.text);
-                    if (cep != null) {
-                      ruaController.text = cep.logradouro!;
-                      bairroController.text = cep.bairro!;
-                      localidadeController.text = cep.localidade!;
-                      estadoController.text = cep.uf!;
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.search,
-                  ),
-                  color: backColor,
-                  splashColor: Colors.black,
-                ),
-              )
             ],
           ),
           Row(
@@ -65,7 +41,7 @@ cadastraEnd(BuildContext context, botao, atualLista) {
               SizedBox(
                 width: 220,
                 child: TextField(
-                  controller: ruaController,
+                  controller: nomeController,
                   cursorColor: useColor,
                   decoration: InputDecoration(
                     focusedBorder: const UnderlineInputBorder(),
@@ -84,7 +60,7 @@ cadastraEnd(BuildContext context, botao, atualLista) {
               SizedBox(
                 width: 100,
                 child: TextField(
-                  controller: numeroController,
+                  controller: telefone1Controller,
                   cursorColor: useColor,
                   decoration: InputDecoration(
                     focusedBorder: const UnderlineInputBorder(),
@@ -102,7 +78,7 @@ cadastraEnd(BuildContext context, botao, atualLista) {
           SizedBox(
             width: 340,
             child: TextField(
-              controller: bairroController,
+              controller: telefone2Controller,
               cursorColor: useColor,
               decoration: InputDecoration(
                 focusedBorder: const UnderlineInputBorder(),
@@ -116,45 +92,6 @@ cadastraEnd(BuildContext context, botao, atualLista) {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 5),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 220,
-                  child: TextField(
-                    controller: localidadeController,
-                    cursorColor: useColor,
-                    decoration: InputDecoration(
-                      focusedBorder: const UnderlineInputBorder(),
-                      labelStyle: TextStyle(color: useColor),
-                      labelText: 'Cidade',
-                    ),
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: useColor,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 100,
-                  child: TextField(
-                    controller: estadoController,
-                    cursorColor: useColor,
-                    decoration: InputDecoration(
-                      focusedBorder: const UnderlineInputBorder(),
-                      labelStyle: TextStyle(color: useColor),
-                      labelText: 'Estado',
-                    ),
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: useColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Center(
               child: Row(
@@ -163,15 +100,12 @@ cadastraEnd(BuildContext context, botao, atualLista) {
                   SizedBox(
                       width: 120,
                       child: TextButton(
-                        style:
-                        TextButton.styleFrom(backgroundColor: useColor),
+                        style: TextButton.styleFrom(backgroundColor: useColor),
                         onPressed: () {
-                          cepController.text = "";
-                          numeroController.text = "";
-                          ruaController.text = "";
-                          bairroController.text = "";
-                          localidadeController.text = "";
-                          estadoController.text = "";
+                          idEnderecoController.text = "";
+                          telefone1Controller.text = "";
+                          nomeController.text = "";
+                          telefone2Controller.text = "";
                         },
                         child: Text(
                           'Limpar',
@@ -189,12 +123,10 @@ cadastraEnd(BuildContext context, botao, atualLista) {
                     child: TextButton(
                       style: TextButton.styleFrom(backgroundColor: useColor),
                       onPressed: () {
-                        if (cepController.text == "" ||
-                            numeroController.text == "" ||
-                            ruaController.text == "" ||
-                            bairroController.text == "" ||
-                            localidadeController.text == "" ||
-                            estadoController.text == "") {
+                        if (idEnderecoController.text == "" ||
+                            telefone1Controller.text == "" ||
+                            nomeController.text == "" ||
+                            telefone2Controller.text == "") {
                           Get.snackbar('Campo em branco',
                               'Preencha todos os campos para poder adicionar',
                               backgroundColor: Colors.red,
@@ -222,6 +154,7 @@ cadastraEnd(BuildContext context, botao, atualLista) {
     ),
   );
 }
+
 showLoaderDialog(BuildContext context, botao, atualLista) {
   AlertDialog alert = AlertDialog(
     backgroundColor: backColor,
@@ -251,19 +184,15 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
           height: 15,
         ),
         Text(
-          "${ruaController.text} ${numeroController.text}",
+          "${nomeController.text} ${telefone1Controller.text}",
           style: TextStyle(color: useColor),
         ),
         Text(
-          bairroController.text,
+          telefone2Controller.text,
           style: TextStyle(color: useColor),
         ),
         Text(
-          cepController.text,
-          style: TextStyle(color: useColor),
-        ),
-        Text(
-          "${localidadeController.text} - ${estadoController.text}",
+          idEnderecoController.text,
           style: TextStyle(color: useColor),
         ),
         Padding(
@@ -297,16 +226,17 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
                     child: TextButton(
                       style: TextButton.styleFrom(backgroundColor: useColor),
                       onPressed: () async {
-                        var endereco = await EnderecoApi.postEndereco(
-                            bairroController.text,
-                            cepController.text,
-                            localidadeController.text,
-                            ruaController.text,
-                            numeroController.text,
-                            estadoController.text);
+                        var cliente = await ClienteApi.postCliente(
+                          nomeController.text,
+                          iD,
+                          cpfCnpjController.text,
+                          telefone1Controller.text,
+                          telefone2Controller.text,
+                          idEnderecoController.text,
+                        );
                         Navigator.pop(context);
 
-                        if (endereco!.id != null) {
+                        if (cliente!.id != null) {
                           showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
@@ -316,7 +246,7 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
                                 style: TextStyle(color: useColor),
                               ),
                               content: Text(
-                                'Adicionou endereço com ID:${endereco.id}',
+                                'Adicionou endereço com ID:${cliente.id}',
                                 style: TextStyle(color: useColor),
                               ),
                               actions: <Widget>[
@@ -353,17 +283,17 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
                       style: TextButton.styleFrom(backgroundColor: useColor),
                       onPressed: () async {
                         print(iD);
-                        var endereco = await EnderecoApi.putEndereco(
-                            bairroController.text,
-                            cepController.text,
-                            iD,
-                            localidadeController.text,
-                            ruaController.text,
-                            numeroController.text,
-                            estadoController.text);
+                        var cliente = await ClienteApi.putCliente(
+                          nomeController.text,
+                          iD,
+                          cpfCnpjController.text,
+                          telefone1Controller.text,
+                          telefone2Controller.text,
+                          idEnderecoController.text,
+                        );
                         Navigator.pop(context);
 
-                        if (endereco!.id != null) {
+                        if (cliente!.id != null) {
                           showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
@@ -373,7 +303,7 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
                                 style: TextStyle(color: useColor),
                               ),
                               content: Text(
-                                'Atualizou endereço com ID:${endereco.id}',
+                                'Atualizou endereço com ID:${cliente.id}',
                                 style: TextStyle(color: useColor),
                               ),
                               actions: <Widget>[
@@ -419,10 +349,10 @@ showLoaderDialog(BuildContext context, botao, atualLista) {
   );
 }
 
-listaEndereco(apcLista, apcCadas, apcAtual(p), atualLista) {
-  Future<List<Endereco?>?> endereco = EnderecoApi.getEndereco();
+listaCliente(apcLista, apcCadas, apcAtual(p), atualLista) {
+  Future<List<Cliente?>?> cliente = ClienteApi.getCliente();
   return FutureBuilder(
-      future: endereco,
+      future: cliente,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -445,7 +375,7 @@ listaEndereco(apcLista, apcCadas, apcAtual(p), atualLista) {
                 height: 50,
                 alignment: Alignment.center,
                 child: Text(
-                  'Falha na Requisão',
+                  'Falha na Requisisão',
                   style: TextStyle(
                     fontSize: 25,
                     color: backColor,
@@ -453,9 +383,9 @@ listaEndereco(apcLista, apcCadas, apcAtual(p), atualLista) {
                 ),
               );
             } else {
-              List<Endereco>? endereco = snapshot.data as List<Endereco>?;
+              List<Cliente>? cliente = snapshot.data as List<Cliente>?;
               return listView(
-                  endereco, apcLista, apcCadas, apcAtual, atualLista);
+                  cliente, apcLista, apcCadas, apcAtual, atualLista);
             }
         }
       });
@@ -463,23 +393,23 @@ listaEndereco(apcLista, apcCadas, apcAtual(p), atualLista) {
 
 sort() {
   if (!isSorted) {
-    endereco.sort((Endereco b, Endereco a) => a.id!.compareTo(b.id!));
+    cliente.sort((Cliente b, Cliente a) => a.id!.compareTo(b.id!));
     isSorted = true;
-
-  } else {endereco = endereco.reversed.toList();
+  } else {
+    cliente = cliente.reversed.toList();
   }
 }
 
-listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
+listView(cliente, apcLista, apcCadas, apcAtual(p), atualLista) {
   return SingleChildScrollView(
     child: ListView.builder(
       physics: const ClampingScrollPhysics(),
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      itemCount: endereco.length,
+      itemCount: cliente.length,
       itemBuilder: (context, index) {
-        endereco.sort((Endereco b, Endereco a) => a.id!.compareTo(b.id!));
-        Endereco p = endereco[index];
+        cliente.sort((Cliente b, Cliente a) => a.id!.compareTo(b.id!));
+        Cliente p = cliente[index];
         return Slidable(
           actionExtentRatio: 0.25,
           actionPane: const SlidableDrawerDismissal(),
@@ -505,19 +435,11 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.logradouro} Nº${p.numero}',
+                            '${p.nome} Nº${p.telefone1}',
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.bairro}',
-                            style: TextStyle(color: useColor),
-                          ),
-                          Text(
-                            '${p.cep}',
-                            style: TextStyle(color: useColor),
-                          ),
-                          Text(
-                            '${p.localidade} - ${p.uf}',
+                            '${p.telefone2}',
                             style: TextStyle(color: useColor),
                           ),
                         ],
@@ -597,19 +519,11 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.logradouro} Nº${p.numero}',
+                            '${p.nome} Nº${p.telefone1}',
                             style: TextStyle(color: useColor),
                           ),
                           Text(
-                            '${p.bairro}',
-                            style: TextStyle(color: useColor),
-                          ),
-                          Text(
-                            '${p.cep}',
-                            style: TextStyle(color: useColor),
-                          ),
-                          Text(
-                            '${p.localidade} - ${p.uf}',
+                            '${p.telefone2}',
                             style: TextStyle(color: useColor),
                           ),
                         ],
@@ -646,7 +560,7 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                                 style: TextButton.styleFrom(
                                     backgroundColor: useColor),
                                 onPressed: () async {
-                                  await EnderecoApi.deleteEndereco(p.id);
+                                  await ClienteApi.deleteCliente(p.id);
                                   Navigator.pop(context);
                                   print(p.id);
                                   if (p.id != null) {
@@ -654,30 +568,30 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                                       context: context,
                                       builder: (BuildContext context) =>
                                           AlertDialog(
-                                            backgroundColor: backColor,
-                                            title: Text(
-                                              'Sucesso',
-                                              style: TextStyle(color: useColor),
+                                        backgroundColor: backColor,
+                                        title: Text(
+                                          'Sucesso',
+                                          style: TextStyle(color: useColor),
+                                        ),
+                                        content: Text(
+                                          'Deletou endereço com ID:${p.id}',
+                                          style: TextStyle(color: useColor),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            style: TextButton.styleFrom(
+                                                backgroundColor: useColor),
+                                            onPressed: atualLista,
+                                            child: Text(
+                                              'Ok',
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                color: backColor,
+                                              ),
                                             ),
-                                            content: Text(
-                                              'Deletou endereço com ID:${p.id}',
-                                              style: TextStyle(color: useColor),
-                                            ),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                    backgroundColor: useColor),
-                                                onPressed: atualLista,
-                                                child: Text(
-                                                  'Ok',
-                                                  style: TextStyle(
-                                                    fontSize: 17,
-                                                    color: backColor,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
+                                          )
+                                        ],
+                                      ),
                                     );
                                   }
                                   ;
@@ -726,19 +640,11 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
                     height: 12,
                   ),
                   Text(
-                    'CEP: ${p.cep.toString()}',
+                    p.nome.toString(),
                     style: TextStyle(fontSize: 20, color: useColor),
                   ),
                   Text(
-                    p.localidade.toString(),
-                    style: TextStyle(fontSize: 20, color: useColor),
-                  ),
-                  Text(
-                    p.logradouro.toString(),
-                    style: TextStyle(fontSize: 20, color: useColor),
-                  ),
-                  Text(
-                    'Nº: ${p.numero.toString()}',
+                    'Nº: ${p.telefone1.toString()}',
                     style: TextStyle(fontSize: 20, color: useColor),
                   ),
                 ],
@@ -751,9 +657,8 @@ listView(endereco, apcLista, apcCadas, apcAtual(p), atualLista) {
   );
 }
 
-TextEditingController cepController = TextEditingController();
-TextEditingController numeroController = TextEditingController();
-TextEditingController ruaController = TextEditingController();
-TextEditingController bairroController = TextEditingController();
-TextEditingController localidadeController = TextEditingController();
-TextEditingController estadoController = TextEditingController();
+TextEditingController idEnderecoController = TextEditingController();
+TextEditingController nomeController = TextEditingController();
+TextEditingController telefone1Controller = TextEditingController();
+TextEditingController telefone2Controller = TextEditingController();
+TextEditingController cpfCnpjController = TextEditingController();

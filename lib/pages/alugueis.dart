@@ -10,7 +10,8 @@ class AlugueisPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: backColor,
+    return Scaffold(
+      backgroundColor: backColor,
       appBar: AppBar(
         iconTheme: IconThemeData(color: useColor),
         backgroundColor: appbarColor,
@@ -31,14 +32,15 @@ class AlugueisPage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [SizedBox(
-            height: 12,
-          ),
+          children: [
+            SizedBox(
+              height: 12,
+            ),
             const Logo(
                 height: 125,
                 width: 125,
                 image:
-                "https://media.discordapp.net/attachments/569592762765410334/1009997591976611960/image-removebg-preview_5.png"),
+                    "https://media.discordapp.net/attachments/569592762765410334/1009997591976611960/image-removebg-preview_5.png"),
             SizedBox(
               height: 15,
             ),
@@ -75,37 +77,6 @@ class AlugueisPage extends StatelessWidget {
             ),
             SizedBox(
               height: 10,
-            ),
-            Container(
-              width: 250,
-              child: TextButton(
-                style: TextButton.styleFrom(backgroundColor: useColor),
-                onPressed: () {},
-                child: Text('Atualizar',
-                    style: TextStyle(
-                      color: backColor,
-                      fontSize: 30,
-                    )),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: 250,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: useColor,
-                ),
-                onPressed: () {},
-                child: Text(
-                  'Excluir',
-                  style: TextStyle(
-                    color: backColor,
-                    fontSize: 30,
-                  ),
-                ),
-              ),
             ),
           ],
         ),

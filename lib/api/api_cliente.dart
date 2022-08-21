@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../domain/equipamento.dart';
+import '../domain/cliente.dart';
 import '../domain/usuario.dart';
 
-class EquipamentoApi {
-  static Future<List<Equipamento?>?> getEquipamento() async {
+class ClienteApi {
+  static Future<List<Cliente?>?> getCliente() async {
     final prefs = await SharedPreferences.getInstance();
     var jUsuario = prefs.getString("jUsuario");
     Map<String, dynamic> mapResponse = json.decode(jUsuario!);
@@ -13,21 +13,25 @@ class EquipamentoApi {
     var token = usuario.accessToken;
 
     var headers = {"Authorization": "Bearer $token"};
-    var url = Uri.parse('https://tanilo.herokuapp.com/equipamentos');
+    var url = Uri.parse('https://tanilo.herokuapp.com/clientes');
     var response = await http.get(url, headers: headers);
 
 
     utf8.decode(response.bodyBytes);
     List listResponse = json.decode(utf8.decode(response.bodyBytes));
-    final equipamento = <Equipamento>[];
+    final cliente = <Cliente>[];
     for (Map<String, dynamic> map in listResponse) {
-      Equipamento p = Equipamento.fromJson(map);
-      equipamento.add(p);
+      Cliente p = Cliente.fromJson(map);
+      cliente.add(p);
+      print(p.nome);
+      print(p.endereco!.id);
     }
-    return equipamento;
+    return cliente;
   }
-  static Future<Equipamento?> postEquipamento(
-      nome, valorDaCompra, valorAluguelQuinzena, valorAluguelDia, valorAluguelMes) async {
+
+
+  static Future<Cliente?> postCliente(
+      nome, id, cpfCnpj, telefone1, telefone2, idEndereco) async {
     final prefs = await SharedPreferences.getInstance();
     var jUsuario = prefs.getString("jUsuario");
     Map<String, dynamic> mapResponse = json.decode(jUsuario!);
@@ -39,19 +43,19 @@ class EquipamentoApi {
       "Content-Type": "application/json"
     };
     String body =
-    """{"nome": "$nome","valorDaCompra": "$valorDaCompra","valorAluguelQuinzena": "$valorAluguelQuinzena","valorAluguelDia": "$valorAluguelDia","valorAluguelMes": "$valorAluguelMes"}""";
+    """{"telefone2": "$telefone2","cep": "$idEndereco","cpfCnpj": "$cpfCnpj","nome": "$nome","telefone1": "$telefone1"}""";
 
-    var url = Uri.parse('https://tanilo.herokuapp.com/equipamentos');
+    var url = Uri.parse('https://tanilo.herokuapp.com/clientes');
     var response = await http.post(url, headers: headers, body: body);
     utf8.decode(response.bodyBytes);
     Map<String, dynamic> idResponse =
     json.decode(utf8.decode(response.bodyBytes));
-    var equipamento = Equipamento.fromJson(idResponse);
-    return equipamento;
+    var cliente = Cliente.fromJson(idResponse);
+    return cliente;
   }
 
-  static Future<Equipamento?> putEquipamento(
-      nome, id, valorDaCompra, valorAluguelQuinzena, valorAluguelDia, valorAluguelMes) async {
+  static Future<Cliente?> putCliente(
+      nome, id, cpfCnpj, telefone1, telefone2, idEndereco) async {
     final prefs = await SharedPreferences.getInstance();
     var jUsuario = prefs.getString("jUsuario");
     Map<String, dynamic> mapResponse = json.decode(jUsuario!);
@@ -63,21 +67,19 @@ class EquipamentoApi {
       "Content-Type": "application/json"
     };
     String body =
-    """{"nome": "$nome","valorDaCompra": "$valorDaCompra","valorAluguelQuinzena": "$valorAluguelQuinzena","valorAluguelDia": "$valorAluguelDia","valorAluguelMes": "$valorAluguelMes"}""";
+    """{"telefone2": "$telefone2","cep": "$idEndereco","cpfCnpj": "$cpfCnpj","nome": "$nome","telefone1": "$telefone1"}""";
 
-    print(body);
-    var url = Uri.parse('https://tanilo.herokuapp.com/equipamentos/$id');
-    print(id);
+
+    var url = Uri.parse('https://tanilo.herokuapp.com/clientes/$id');
     var response = await http.put(url, headers: headers, body: body);
-    print(response.statusCode);
     utf8.decode(response.bodyBytes);
     Map<String, dynamic> id2Response =
     json.decode(utf8.decode(response.bodyBytes));
-    var equipamento = Equipamento.fromJson(id2Response);
-    return equipamento;
+    var cliente = Cliente.fromJson(id2Response);
+    return cliente;
   }
 
-  static Future<Equipamento?> deleteEquipamento(id) async {
+  static Future<Cliente?> deleteCliente(id) async {
     final prefs = await SharedPreferences.getInstance();
     var jUsuario = prefs.getString("jUsuario");
     Map<String, dynamic> mapResponse = json.decode(jUsuario!);
@@ -89,12 +91,11 @@ class EquipamentoApi {
       "Content-Type": "application/json"
     };
 
-    var url = Uri.parse('https://tanilo.herokuapp.com/equipamentos/$id');
+    var url = Uri.parse('https://tanilo.herokuapp.com/clientes/$id');
     await http.delete(url, headers: headers);
     return null;
 
 
   }
-
 }
 

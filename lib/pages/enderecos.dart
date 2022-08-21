@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:tela_login_goga/domain/cores.dart';
-import '../domain/endereco.dart';
 import '../widget/logo.dart';
 import '../widget/widget_endereco_page.dart';
 import 'menupage.dart';
@@ -142,8 +141,8 @@ class _EnderecosPage extends State<EnderecosPage> {
                 (apareceListaStatus)
                     ? listaEndereco(apcCadas, apcLista, apcAtual, atualLista)
                     : SizedBox(),
-                (apareceCadasStatus) ? cadastraEnd(context, 1) : SizedBox(),
-                (apareceAtualStatus) ? cadastraEnd(context, 2) : SizedBox(),
+                (apareceCadasStatus) ? cadastraEnd(context, 1, atualLista) : SizedBox(),
+                (apareceAtualStatus) ? cadastraEnd(context, 2, atualLista) : SizedBox(),
               ],
             ),
           ),
